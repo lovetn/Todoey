@@ -116,6 +116,19 @@ class TododListViewController: UITableViewController {
         
         present(alert, animated: true, completion: nil)
     }
+    func saveItems() {
+        
+        let encoder = PropertyListEncoder()
+        do{
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("error encoding Item Array, \(error)")
+        }
+        self.tableView.reloadData()
+        
+    }
+
     
     
 
