@@ -18,24 +18,8 @@ class TododListViewController: UITableViewController {
         
         print(dataFilePath)
         
-        let newItem = Item()
-        newItem.title = "Find Mike"
-        newItem.done = true
-        
-        itemArray.append(newItem)
-        
-        let newItem2 = Item()
-        newItem2.title = "Buy Eggos"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Destroy Demogorgon"
-        itemArray.append(newItem3)
-        
-//        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
-//         itemArray = items
-//
-//    }
+       
+     loadItems()
     }
         // Do any additional setup after loading the view, typically from a nib.
         
@@ -127,6 +111,17 @@ class TododListViewController: UITableViewController {
         }
         self.tableView.reloadData()
         
+    }
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                try itemArray = decoder.decode([Item].self, from: data)
+                //itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding item arraray\(error)")
+            }
+        }
     }
 
     
