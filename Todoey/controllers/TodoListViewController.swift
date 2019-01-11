@@ -20,9 +20,10 @@ class TododListViewController: UITableViewController {
         
       print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         print(dataFilePath)
-             loadItems()
+        
+        loadItems()
     }
-        // Do any additional setup after loading the view, typically from a nib.
+    
         
     override func tableView(_ tableView: UITableView, numberOfRowsInSection: Int) -> Int {
         return itemArray.count
@@ -45,28 +46,21 @@ class TododListViewController: UITableViewController {
 
     
    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-   // print(itemArray[indexPath.row])
+    
+//    context.delete(itemArray[indexPath.row ])
+//    itemArray.remove(at: indexPath.row)
     
     itemArray[indexPath.row].done = !itemArray[indexPath.row].done
     
     tableView.reloadData()
-   
-    
-   // tableView.deselectRow(at: IndexPath, animated: true)
-    
-    
-    
+// tableView.deselectRow(at: IndexPath, animated: true)
     if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
         tableView.cellForRow(at: indexPath)?.accessoryType = .none
     } else {
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         }
-
-    tableView.deselectRow(at: indexPath, animated: true)
+tableView.deselectRow(at: indexPath, animated: true)
     }
-    
-    
-    
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
       
        var textField = UITextField()
@@ -114,8 +108,8 @@ class TododListViewController: UITableViewController {
         self.tableView.reloadData()
         
     }
-    func loadItems() {
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+      
         do{
        itemArray = try context.fetch(request)
         } catch {
@@ -123,12 +117,21 @@ class TododListViewController: UITableViewController {
         }
     }
     
-    
+ }
+ 
+ extension TododListViewController: UISearchBarDelegate{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+       
+        request.predicate = NSPredicate(format: "title Contains %@", searchBar.text!)
+        
+         request.sortDescriptors  = [NSSortDescriptor(key: "title", ascending: true)]
+        loadItems(with: request)
+        
+    }
+ }
+ 
 
-    
-    
-
-
-}
+ 
 
  
