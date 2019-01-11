@@ -18,10 +18,9 @@ class TododListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+      print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         print(dataFilePath)
-        
-       
-//     loadItems()
+             loadItems()
     }
         // Do any additional setup after loading the view, typically from a nib.
         
@@ -80,10 +79,8 @@ class TododListViewController: UITableViewController {
             let newItem = Item(context: self.context)
            newItem.title = textField.text!
            newItem.done = false
-            
             self.itemArray.append(newItem)
-        
-            self.saveItems()
+             self.saveItems()
             
 //            let encoder = PropertyListEncoder()
 //             do{
@@ -100,17 +97,10 @@ class TododListViewController: UITableViewController {
             textField = alertTextField
             
         }
-        
-        
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
     }
-    
-    
-    
-    
-    
     
     func saveItems() {
         
@@ -124,17 +114,14 @@ class TododListViewController: UITableViewController {
         self.tableView.reloadData()
         
     }
-//    func loadItems() {
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//            let decoder = PropertyListDecoder()
-//            do {
-//                try itemArray = decoder.decode([Item].self, from: data)
-//                //itemArray = try decoder.decode([Item].self, from: data)
-//            } catch {
-//                print("Error decoding item arraray\(error)")
-//            }
-//        }
-//    }
+    func loadItems() {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        do{
+       itemArray = try context.fetch(request)
+        } catch {
+            print("Erorr fetching data from context \(error)")
+        }
+    }
     
     
 
